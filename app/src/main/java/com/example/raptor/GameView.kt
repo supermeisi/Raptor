@@ -9,6 +9,6 @@ class GameView(context : Context) : View(context) {
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
 
-        canvas?.drawColor(Color.RED)
+        canvas.drawColor(Color.RED)
     }
 }
