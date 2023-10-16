@@ -1,7 +1,10 @@
 package com.example.raptor
 
 import android.os.Bundle
+import android.widget.Button
+import android.content.Intent
 import androidx.activity.ComponentActivity
+import android.view.View
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -16,5 +19,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout)
+
+        val buttonPlay = findViewById<Button>(R.id.buttonPlay)
+
+        buttonPlay.setOnClickListener {
+            val intent = Intent(this, GameActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
