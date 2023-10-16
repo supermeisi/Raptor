@@ -3,7 +3,6 @@ package com.example.raptor
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
-import com.example.raptor.databinding.ActivityGameBinding
 
 class GameActivity : AppCompatActivity() {
 
