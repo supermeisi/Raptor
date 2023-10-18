@@ -11,7 +11,11 @@ import android.view.View
 
 class GameView(context : Context) : SurfaceView(context), SurfaceHolder.Callback {
 
+    // Important classes
     var gameThread : GameThread
+    private val bulletObjects = ArrayList<BulletObject>()
+
+    // Important values
     val paint : Paint
     var circleX : Float
     var circleY : Float
@@ -29,6 +33,9 @@ class GameView(context : Context) : SurfaceView(context), SurfaceHolder.Callback
         circleY = 100f
         width = 100f
         height = 100f
+
+        val bullet = BulletObject(100f, 100f)
+        bulletObjects.add(bullet)
     }
 
     override fun surfaceCreated(holder: SurfaceHolder) {
@@ -55,6 +62,10 @@ class GameView(context : Context) : SurfaceView(context), SurfaceHolder.Callback
     fun update() {
         // Update the square's position here
         circleX += 5f
+
+        for (bulletObject in bulletObjects) {
+            bulletObject.update()
+        }
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -70,7 +81,14 @@ class GameView(context : Context) : SurfaceView(context), SurfaceHolder.Callback
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
 
-        canvas.drawColor(Color.RED)
+        canvas?.drawColor(Color.RED)
+
+        //Draw the bullets
+        for (bulletObject in bulletObjects) {
+            bulletObject.draw(canvas)
+        }
+
+        //Draw the player
         canvas?.drawCircle(circleX, circleY, 50f, paint)
     }
 }
