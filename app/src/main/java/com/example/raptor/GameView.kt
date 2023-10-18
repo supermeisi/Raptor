@@ -9,12 +9,14 @@ import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.View
+import kotlin.math.abs
 
 class GameView(context : Context) : SurfaceView(context), SurfaceHolder.Callback {
 
     // Important classes
     var gameThread : GameThread
     private val bulletObjects = ArrayList<BulletObject>()
+    private val shipObjects = ArrayList<ShipObject>()
 
     // Important values
     val paint : Paint
@@ -44,6 +46,10 @@ class GameView(context : Context) : SurfaceView(context), SurfaceHolder.Callback
 
     override fun surfaceCreated(holder: SurfaceHolder) {
         gameThread.start()
+
+        // Create new ship
+        val ship = ShipObject(100f, 100f)
+        shipObjects.add(ship)
     }
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
@@ -74,21 +80,46 @@ class GameView(context : Context) : SurfaceView(context), SurfaceHolder.Callback
 
         // Create new bullets
         if(currentTime - prevTime >= 100) {
-            val bullet1 = BulletObject(circleX - 15f, circleY)
-            val bullet2 = BulletObject(circleX + 15f, circleY)
+            val bullet1 = BulletObject(circleX - 20f, circleY)
+            val bullet2 = BulletObject(circleX + 20f, circleY)
             bulletObjects.add(bullet1)
             bulletObjects.add(bullet2)
             prevTime = currentTime
         }
 
-        for ((id, bulletObject) in bulletObjects.withIndex()) {
+        for (bulletObject in bulletObjects.reversed()) {
+            //Check collision between bullets and ships
+            for(shipObject in shipObjects.reversed()) {
+                // Update ship position
+                var dx = shipObject.getX() - bulletObject.getX()
+                var dy = shipObject.getY() - bulletObject.getY()
+                if(abs(dx) <= 100f && abs(dy) <= 100f) {
+                    var damage = bulletObject.getDamage()
+                    shipObject.setDamage(damage)
+                    bulletObjects.remove(bulletObject)
+                }
+            }
+
             // Update the bullet position
             bulletObject.addCoordinate(0f, -10f)
 
             // Remove bullets when being outside the canvas
             if(bulletObject.getX() <= 0 || bulletObject.getX() >= canvasWidth ||
                bulletObject.getY() <= 0 || bulletObject.getY() >= canvasHeight) {
-                bulletObjects.drop(id)
+                bulletObjects.remove(bulletObject)
+            }
+        }
+
+        for(shipObject in shipObjects.reversed()) {
+            // Update ship position
+            val speed = shipObject.getSpeed()
+            shipObject.addCoordinate(0f, speed)
+
+            //Check energy and destroy ship
+            val energy = shipObject.getEnergy()
+
+            if(energy <= 0) {
+                shipObjects.remove(shipObject)
             }
         }
     }
@@ -138,11 +169,15 @@ class GameView(context : Context) : SurfaceView(context), SurfaceHolder.Callback
         canvasWidth = canvas.width
         canvasHeight = canvas.height
 
-        canvas?.drawColor(Color.RED)
+        canvas?.drawColor(Color.BLACK)
 
         //Draw the bullets
         for (bulletObject in bulletObjects) {
             bulletObject.draw(canvas)
+        }
+
+        for (shipObject in shipObjects) {
+            shipObject.draw(canvas)
         }
 
         //Draw the player

@@ -4,22 +4,23 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 
-class BulletObject (
+class ShipObject(
         var centerX : Float,
         var centerY : Float
 ) {
-
-    private var damage : Int
+    private var speed : Float
+    private var energy : Int
 
     init {
-        damage = 1
+        speed = 1f
+        energy = 100
     }
 
     fun draw(canvas : Canvas) {
         //Drawing the object
         val paint = Paint()
-        paint.color = Color.GRAY
-        canvas.drawCircle(centerX, centerY, 10f, paint)
+        paint.color = Color.GREEN
+        canvas.drawRect(centerX - 50f, centerY - 50f, centerX + 50f, centerY + 50f, paint)
     }
 
     fun addCoordinate(dX : Float, dY : Float) {
@@ -36,7 +37,15 @@ class BulletObject (
         return centerY
     }
 
-    fun getDamage() : Int {
-        return damage
+    fun getSpeed() : Float {
+        return speed
+    }
+
+    fun getEnergy() : Int {
+        return energy
+    }
+
+    fun setDamage (damage : Int) {
+        energy -= damage
     }
 }
