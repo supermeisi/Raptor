@@ -21,6 +21,8 @@ class GameView(context : Context) : SurfaceView(context), SurfaceHolder.Callback
     var circleY : Float
     var width : Float
     var height: Float
+    var prevX : Float
+    var prevY : Float
 
     init {
         holder.addCallback(this)
@@ -30,11 +32,13 @@ class GameView(context : Context) : SurfaceView(context), SurfaceHolder.Callback
         paint.isAntiAlias = true
         paint.color = Color.YELLOW
         circleX = 100f
-        circleY = 100f
+        circleY = 1500f
         width = 100f
         height = 100f
+        prevX = 0f
+        prevY = 0f
 
-        val bullet = BulletObject(100f, 100f)
+        val bullet = BulletObject(100f, 1500f)
         bulletObjects.add(bullet)
     }
 
@@ -60,22 +64,36 @@ class GameView(context : Context) : SurfaceView(context), SurfaceHolder.Callback
     }
 
     fun update() {
-        // Update the square's position here
-        circleX += 5f
-
+        //Update the bullet position
         for (bulletObject in bulletObjects) {
-            bulletObject.update()
+            bulletObject.addCoordinate(0f, -5f)
         }
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        circleX = event!!.x
-        circleY = event!!.y
+        val x = event!!.x
+        val y = event!!.y
 
+        when(event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                prevX = x
+                prevY = y
+            }
+            MotionEvent.ACTION_MOVE -> {
+                // Calculate the relative movement
+                val dx = x - prevX
+                val dy = y - prevY
+
+                // Update the object's position based on relative movement
+                circleX += x
+                circleY += y
+            }
+        }
+
+        // Invalidate the view to trigger a redraw
         invalidate()
 
         return super.onTouchEvent(event)
-        //return true
     }
 
     override fun draw(canvas: Canvas) {

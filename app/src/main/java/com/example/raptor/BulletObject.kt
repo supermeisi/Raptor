@@ -16,7 +16,9 @@ class BulletObject (
         canvas.drawCircle(centerX, centerY, 20f, paint)
     }
 
-    fun update() {
+    fun addCoordinate(dX : Float, dY : Float) {
         //Function for updating object
+        centerX += dX;
+        centerY += dY;
     }
 }
