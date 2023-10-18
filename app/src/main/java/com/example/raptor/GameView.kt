@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.util.Log
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
@@ -23,6 +24,8 @@ class GameView(context : Context) : SurfaceView(context), SurfaceHolder.Callback
     var height: Float
     var prevX : Float
     var prevY : Float
+    var canvasWidth : Int
+    var canvasHeight : Int
 
     init {
         holder.addCallback(this)
@@ -37,6 +40,8 @@ class GameView(context : Context) : SurfaceView(context), SurfaceHolder.Callback
         height = 100f
         prevX = 0f
         prevY = 0f
+        canvasWidth = 0
+        canvasHeight = 0
 
         val bullet = BulletObject(100f, 1500f)
         bulletObjects.add(bullet)
@@ -76,6 +81,7 @@ class GameView(context : Context) : SurfaceView(context), SurfaceHolder.Callback
 
         when(event.action) {
             MotionEvent.ACTION_DOWN -> {
+                // Save the initial touch position
                 prevX = x
                 prevY = y
             }
@@ -84,20 +90,35 @@ class GameView(context : Context) : SurfaceView(context), SurfaceHolder.Callback
                 val dx = x - prevX
                 val dy = y - prevY
 
-                // Update the object's position based on relative movement
-                circleX += x
-                circleY += y
+                val newPosX = circleX + dx
+                val newPosY = circleY + dy
+
+                // Check if object is within canvas boundaries
+                if(newPosX >= 0 && newPosX <= canvasWidth &&
+                   newPosY >= 0 && newPosY <= canvasHeight) {
+
+                    // Update the object's position based on relative movement
+                    circleX = newPosX
+                    circleY = newPosY
+                }
             }
         }
+
+        // Update the previous touch position
+        prevX = x
+        prevY = y
 
         // Invalidate the view to trigger a redraw
         invalidate()
 
-        return super.onTouchEvent(event)
+        return true
     }
 
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
+
+        canvasWidth = canvas.width
+        canvasHeight = canvas.height
 
         canvas?.drawColor(Color.RED)
 
