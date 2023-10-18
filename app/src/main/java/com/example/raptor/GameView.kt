@@ -73,9 +73,11 @@ class GameView(context : Context) : SurfaceView(context), SurfaceHolder.Callback
         var currentTime = System.currentTimeMillis()
 
         // Create new bullets
-        if(currentTime - prevTime >= 250) {
-            val bullet = BulletObject(circleX, circleY)
-            bulletObjects.add(bullet)
+        if(currentTime - prevTime >= 100) {
+            val bullet1 = BulletObject(circleX - 15f, circleY)
+            val bullet2 = BulletObject(circleX + 15f, circleY)
+            bulletObjects.add(bullet1)
+            bulletObjects.add(bullet2)
             prevTime = currentTime
         }
 
