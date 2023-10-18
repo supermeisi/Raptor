@@ -20,12 +20,11 @@ class GameView(context : Context) : SurfaceView(context), SurfaceHolder.Callback
     val paint : Paint
     var circleX : Float
     var circleY : Float
-    var width : Float
-    var height: Float
     var prevX : Float
     var prevY : Float
     var canvasWidth : Int
     var canvasHeight : Int
+    var prevTime : Long
 
     init {
         holder.addCallback(this)
@@ -34,17 +33,13 @@ class GameView(context : Context) : SurfaceView(context), SurfaceHolder.Callback
         paint.isFilterBitmap = true
         paint.isAntiAlias = true
         paint.color = Color.YELLOW
-        circleX = 100f
-        circleY = 1500f
-        width = 100f
-        height = 100f
+        circleX = 0f
+        circleY = 0f
         prevX = 0f
         prevY = 0f
         canvasWidth = 0
         canvasHeight = 0
-
-        val bullet = BulletObject(100f, 1500f)
-        bulletObjects.add(bullet)
+        prevTime = 0
     }
 
     override fun surfaceCreated(holder: SurfaceHolder) {
@@ -53,6 +48,11 @@ class GameView(context : Context) : SurfaceView(context), SurfaceHolder.Callback
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
         // Handle surface changes (if needed)
+        canvasWidth = width
+        canvasHeight = height
+
+        circleX = canvasWidth.toFloat() / 2
+        circleY = canvasHeight.toFloat() / 2 + 800
     }
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
@@ -69,9 +69,25 @@ class GameView(context : Context) : SurfaceView(context), SurfaceHolder.Callback
     }
 
     fun update() {
-        //Update the bullet position
-        for (bulletObject in bulletObjects) {
-            bulletObject.addCoordinate(0f, -5f)
+        //Create new bullet
+        var currentTime = System.currentTimeMillis()
+
+        // Create new bullets
+        if(currentTime - prevTime >= 250) {
+            val bullet = BulletObject(circleX, circleY)
+            bulletObjects.add(bullet)
+            prevTime = currentTime
+        }
+
+        for ((id, bulletObject) in bulletObjects.withIndex()) {
+            // Update the bullet position
+            bulletObject.addCoordinate(0f, -10f)
+
+            // Remove bullets when being outside the canvas
+            if(bulletObject.getX() <= 0 || bulletObject.getX() >= canvasWidth ||
+               bulletObject.getY() <= 0 || bulletObject.getY() >= canvasHeight) {
+                bulletObjects.drop(id)
+            }
         }
     }
 
