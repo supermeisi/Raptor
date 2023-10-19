@@ -18,6 +18,7 @@ class GameView(context : Context) : SurfaceView(context), SurfaceHolder.Callback
     var gameThread : GameThread
     private val bulletObjects = ArrayList<BulletObject>()
     private val shipObjects = ArrayList<ShipObject>()
+    private val projectileObjects = ArrayList<ProjectileObject>()
 
     // Important values
     val paint : Paint
@@ -128,6 +129,13 @@ class GameView(context : Context) : SurfaceView(context), SurfaceHolder.Callback
             val speed = shipObject.getSpeed()
             shipObject.addCoordinate(0f, speed)
 
+            val dt = currentTime - shipObject.getShootTime()
+            // Create projectile after given time
+            if(currentTime.mod(shipObject.getShootTime()) <= 100) {
+                val projectile = ProjectileObject(this, shipObject)
+                projectileObjects.add(projectile)
+            }
+
             //Check energy and destroy ship
             val energy = shipObject.getEnergy()
 
@@ -139,6 +147,10 @@ class GameView(context : Context) : SurfaceView(context), SurfaceHolder.Callback
             if(shipObject.isCollision(circleX, circleY)) {
                 gameThread.destroy()
             }
+        }
+
+        for(projectileObject in projectileObjects) {
+            projectileObject.addCoordinate()
         }
     }
 
@@ -196,6 +208,10 @@ class GameView(context : Context) : SurfaceView(context), SurfaceHolder.Callback
 
         for (shipObject in shipObjects) {
             shipObject.draw(canvas)
+        }
+
+        for (projectileObject in projectileObjects) {
+            projectileObject.draw(canvas)
         }
 
         //Draw the player

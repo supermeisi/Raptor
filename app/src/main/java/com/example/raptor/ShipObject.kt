@@ -12,11 +12,13 @@ class ShipObject(
     private var speed : Float
     private var energy : Int
     private var size : Float
+    private var shootTime : Int
 
     init {
         speed = 5f
         energy = 50
         size = 150f
+        shootTime = 2000
     }
 
     fun draw(canvas : Canvas) {
@@ -57,5 +59,9 @@ class ShipObject(
         var dy = abs(y - centerY)
 
         return abs(dx) <= 50 && abs(dy) <= 50
+    }
+
+    fun getShootTime() : Int {
+        return shootTime
     }
 }
