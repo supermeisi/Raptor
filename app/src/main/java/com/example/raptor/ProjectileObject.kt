@@ -6,17 +6,17 @@ import android.graphics.Paint
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-class ProjectileObject (
+class ProjectileObject(
     gameView: GameView,
     shipObject: ShipObject
 ) {
 
-    private var damage : Int
-    private var centerX : Float
-    private var centerY : Float
-    private val dirX : Float
-    private val dirY : Float
-    private var speed : Float
+    private var damage: Int
+    private var centerX: Float
+    private var centerY: Float
+    private val dirX: Float
+    private val dirY: Float
+    private var speed: Float
 
     init {
         damage = 5
@@ -27,7 +27,7 @@ class ProjectileObject (
         dirY = gameView.circleY - centerY
     }
 
-    fun draw(canvas : Canvas) {
+    fun draw(canvas: Canvas) {
         //Drawing the object
         val paint = Paint()
         paint.color = Color.RED
@@ -40,15 +40,15 @@ class ProjectileObject (
         centerY += speed * dirY / sqrt(dirX.pow(2) + dirY.pow(2))
     }
 
-    fun getX() : Float {
+    fun getX(): Float {
         return centerX
     }
 
-    fun getY() : Float {
+    fun getY(): Float {
         return centerY
     }
 
-    fun getDamage() : Int {
+    fun getDamage(): Int {
         return damage
     }
 }
