@@ -219,5 +219,9 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
 
         //Draw the player
         canvas?.drawCircle(circleX, circleY, 50f, paint)
+
+        // Add energy life bar
+        val lifeBarObject = LifeBarObject()
+        lifeBarObject.draw(canvas)
     }
 }
