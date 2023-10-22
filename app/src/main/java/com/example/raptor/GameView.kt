@@ -16,6 +16,9 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
 
     // Important classes
     var gameThread: GameThread
+
+    // User-defined classes
+    private var playerObject = PlayerObject(0f, 0f)
     private val bulletObjects = ArrayList<BulletObject>()
     private val shipObjects = ArrayList<ShipObject>()
     private val projectileObjects = ArrayList<ProjectileObject>()
@@ -67,6 +70,8 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
 
         circleX = canvasWidth.toFloat() / 2
         circleY = canvasHeight.toFloat() / 2 + 800
+
+        playerObject.setCoordinate(canvasWidth.toFloat() / 2, canvasHeight.toFloat() - 200f)
     }
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
@@ -88,8 +93,8 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
 
         // Create new bullets
         if (currentTime - prevBulletTime >= 100) {
-            val bullet1 = BulletObject(circleX - 20f, circleY)
-            val bullet2 = BulletObject(circleX + 20f, circleY)
+            val bullet1 = BulletObject(playerObject.getCoordinate().first - 20f, playerObject.getCoordinate().second)
+            val bullet2 = BulletObject(playerObject.getCoordinate().first + 20f, playerObject.getCoordinate().second)
             bulletObjects.add(bullet1)
             bulletObjects.add(bullet2)
             prevBulletTime = currentTime
@@ -133,7 +138,7 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
             val dt = currentTime - shipObject.getShootTime()
             // Create projectile after given time
             if (currentTime.mod(shipObject.getShootTime()) <= 100) {
-                val projectile = ProjectileObject(this, shipObject)
+                val projectile = ProjectileObject(playerObject, shipObject)
                 projectileObjects.add(projectile)
             }
 
@@ -180,8 +185,7 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
                 ) {
 
                     // Update the object's position based on relative movement
-                    circleX = newPosX
-                    circleY = newPosY
+                    playerObject.addCoordinate(dx, dy)
                 }
             }
         }
@@ -197,28 +201,32 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
     }
 
     override fun draw(canvas: Canvas) {
+        // Draw the canvas
         super.draw(canvas)
 
+        // Get the canvas size
         canvasWidth = canvas.width
         canvasHeight = canvas.height
 
         canvas?.drawColor(Color.BLACK)
 
-        //Draw the bullets
+        // Draw the player
+        playerObject.draw(canvas)
+
+        // Draw the bullets
         for (bulletObject in bulletObjects) {
             bulletObject.draw(canvas)
         }
 
+        // Draw the ships
         for (shipObject in shipObjects) {
             shipObject.draw(canvas)
         }
 
+        // Draw the projectiles
         for (projectileObject in projectileObjects) {
             projectileObject.draw(canvas)
         }
-
-        //Draw the player
-        canvas?.drawCircle(circleX, circleY, 50f, paint)
 
         // Add energy life bar
         val lifeBarObject = LifeBarObject()

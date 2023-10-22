@@ -8,12 +8,12 @@ import android.graphics.Shader
 
 class LifeBarObject {
     var canvasWidth : Int
-    var energy : Float
+    var energy : Int
     var damage : Float
 
     init {
         canvasWidth = 0
-        energy = 100f
+        energy = 100
         damage = 0f
     }
 

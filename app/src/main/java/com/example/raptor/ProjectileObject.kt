@@ -7,7 +7,7 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 class ProjectileObject(
-    gameView: GameView,
+    playerObject: PlayerObject,
     shipObject: ShipObject
 ) {
 
@@ -23,8 +23,8 @@ class ProjectileObject(
         centerX = shipObject.getX()
         centerY = shipObject.getY()
         speed = 5f
-        dirX = gameView.circleX - centerX
-        dirY = gameView.circleY - centerY
+        dirX = playerObject.getCoordinate().first - centerX
+        dirY = playerObject.getCoordinate().second - centerY
     }
 
     fun draw(canvas: Canvas) {
