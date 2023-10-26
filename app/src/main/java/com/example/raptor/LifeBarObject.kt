@@ -6,19 +6,19 @@ import android.graphics.LinearGradient
 import android.graphics.Paint
 import android.graphics.Shader
 
-class LifeBarObject {
+class LifeBarObject (var playerObject: PlayerObject) {
     var canvasWidth : Int
     var energy : Int
-    var damage : Float
+    var damage : Int
 
     init {
         canvasWidth = 0
         energy = 100
-        damage = 0f
+        damage = 0
     }
 
-    fun addDamage(dd : Float) {
-        damage += dd
+    fun update() {
+        damage = playerObject.getDamage()
     }
 
     fun createLinearGradient() : LinearGradient {
@@ -37,6 +37,6 @@ class LifeBarObject {
 
         val paint2 = Paint()
         paint2.color = Color.BLACK
-        canvas.drawRect((1 - damage/energy)*canvasWidth.toFloat(), 0f, canvasWidth.toFloat(), 50f, paint2)
+        canvas.drawRect((1 - damage.toFloat()/energy.toFloat())*canvasWidth.toFloat(), 0f, canvasWidth.toFloat(), 50f, paint2)
     }
 }

@@ -11,12 +11,14 @@ class PlayerObject(
 ) {
     private var speed : Float
     private var energy : Int
+    private var damage : Int
     private var size : Float
     private var shootTime : Int
 
     init {
         speed = 5f
         energy = 1000
+        damage = 100
         size = 100f
         shootTime = 2000
     }
@@ -60,7 +62,11 @@ class PlayerObject(
     }
 
     fun setDamage(damage : Int) {
-        energy -= damage
+        this.damage += damage
+    }
+
+    fun getDamage() : Int {
+        return damage
     }
 
     fun isCollision(x : Float, y : Float) : Boolean {

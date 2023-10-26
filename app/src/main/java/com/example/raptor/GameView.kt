@@ -22,6 +22,7 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
     private val bulletObjects = ArrayList<BulletObject>()
     private val shipObjects = ArrayList<ShipObject>()
     private val projectileObjects = ArrayList<ProjectileObject>()
+    private val lifeBarObject = LifeBarObject(playerObject)
 
     // Important values
     val paint: Paint
@@ -158,6 +159,9 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
         for (projectileObject in projectileObjects) {
             projectileObject.addCoordinate()
         }
+
+        // Update energy life bar
+        lifeBarObject.update()
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -229,7 +233,6 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
         }
 
         // Add energy life bar
-        val lifeBarObject = LifeBarObject()
         lifeBarObject.draw(canvas)
     }
 }
